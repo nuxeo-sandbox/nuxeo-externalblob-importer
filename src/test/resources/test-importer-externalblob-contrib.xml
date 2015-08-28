@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.ecm.platform.importer.externalblob.test.contrib">
+
+  <extension target="org.nuxeo.ecm.platform.importer.service.DefaultImporterComponent" point="importerConfiguration">
+   <importerConfig sourceNodeClass ="org.nuxeo.ecm.platform.importer.source.FileSourceNode" >
+       <documentModelFactory leafType="File" folderishType="Folder" documentModelFactoryClass="org.nuxeo.ecm.platform.importer.externalblob.factories.ExternalBlobDocumentModelFactory" />
+   </importerConfig>
+  </extension>
+  
+  <extension point="schema" target="org.nuxeo.ecm.core.schema.TypeService">
+
+    <schema name="externalfile" prefix="extFile" src="schema/externalfile.xsd"/>
+
+  </extension>
+  
+  <extension point="doctype" target="org.nuxeo.ecm.core.schema.TypeService">
+
+    <doctype extends="Document" name="ExternalFile">
+      <schema name="common"/>
+      <schema name="externalfile"/>
+      <schema name="dublincore"/>
+      <schema name="uid"/>
+      <schema name="files"/>
+      <facet name="Downloadable"/>
+      <facet name="Versionable"/>
+      <facet name="Publishable"/>
+      <facet name="Commentable"/>
+      <facet name="HasRelatedText"/>
+    </doctype>
+    
+  </extension>
+  
+  <extension point="ExternalBlobAdapter" target="org.nuxeo.ecm.core.api.blobholder.BlobHolderAdapterComponent">
+    <adapter
+        class="org.nuxeo.ecm.core.api.externalblob.FileSystemExternalBlobAdapter" prefix="fs">
+        <property name="container"></property>
+    </adapter>
+  </extension>
+  
+</component>
