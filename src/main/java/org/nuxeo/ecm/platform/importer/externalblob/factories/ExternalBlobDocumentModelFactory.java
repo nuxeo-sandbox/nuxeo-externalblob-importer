@@ -22,23 +22,20 @@ package org.nuxeo.ecm.platform.importer.externalblob.factories;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.blobholder.BlobHolder;
-import org.nuxeo.ecm.platform.importer.factories.AbstractDocumentModelFactory;
 import org.nuxeo.ecm.platform.importer.factories.DefaultDocumentModelFactory;
 import org.nuxeo.ecm.platform.importer.source.SourceNode;
 
 /**
  * External Blob referenced DocumentFactory
- * 
+ *
  *
  * @author Mike Obrebski
  */
@@ -48,7 +45,7 @@ public class ExternalBlobDocumentModelFactory extends DefaultDocumentModelFactor
      * Instantiate a DefaultDocumentModelFactory that creates Folder and File
      */
     public ExternalBlobDocumentModelFactory() {
-        this("Folder", "ExternalFile");
+        this("Folder", "Picture");
     }
 
     /**
@@ -70,7 +67,7 @@ public class ExternalBlobDocumentModelFactory extends DefaultDocumentModelFactor
      */
     @Override
     public DocumentModel createLeafNode(CoreSession session, DocumentModel parent, SourceNode node) throws IOException {
-        
+
     	BlobHolder bh = node.getBlobHolder();
         String leafTypeToUse = getDocTypeToUse(bh);
         if (leafTypeToUse == null) {
@@ -86,28 +83,27 @@ public class ExternalBlobDocumentModelFactory extends DefaultDocumentModelFactor
         String name = getValidNameFromFileName(node.getName());
         String fileName = node.getName();
 
+        //TODO Use mimeType / FileManager to create appropriate Doc Type
+
         DocumentModel doc = session.createDocumentModel(parent.getPathAsString(), name, leafTypeToUse);
         for (String facet : facets) {
             doc.addFacet(facet);
         }
-        
+
         Blob extBlob = bh.getBlob();
-        System.out.println("ExternalFile: "+node.getSourcePath());
-        
-        //DocumentModel extDoc = session.createDocumentModel(parent.getPathAsString(), name, "ExternalFile");
-        
-        
-        doc.setProperty("dublincore", "title", node.getName());
+
+        doc.setProperty("dublincore", "title", fileName);
         doc.setProperty("externalfile", "filename", fileName);
-        //doc.setProperty("externalfile", "content", bh.getBlob());
-        
+
+
+        //Set Map directly
         Map<String, Serializable> extContent = new HashMap<String, Serializable>();
         extContent.put("mime-type", mimeType);
         extContent.put("uri", "fs:"+node.getSourcePath());
         extContent.put("length", extBlob.getLength());
         extContent.put("name", fileName);
         extContent.put("digest", bh.getHash());
-      
+
         doc.setProperty("externalfile", "content", extContent);
 
         doc = session.createDocument(doc);

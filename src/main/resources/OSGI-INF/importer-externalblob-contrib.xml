@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <component name="org.nuxeo.ecm.platform.importer.externalblob.contrib">
 
+  <require>org.nuxeo.ecm.core.CoreExtensions</require>
+  <require>org.nuxeo.ecm.platform.picture.web.coreTypes</require>
+
   <extension target="org.nuxeo.ecm.platform.importer.service.DefaultImporterComponent" point="importerConfiguration">
    <importerConfig sourceNodeClass ="org.nuxeo.ecm.platform.importer.source.FileSourceNode" >
        <documentModelFactory leafType="File" folderishType="Folder" documentModelFactoryClass="org.nuxeo.ecm.platform.importer.externalblob.factories.ExternalBlobDocumentModelFactory" />
@@ -8,16 +11,22 @@
   </extension>
   
   <extension point="schema" target="org.nuxeo.ecm.core.schema.TypeService">
-
-    <schema name="externalfile" prefix="extFile" src="schema/externalfile.xsd"/>
-
+    <schema name="externalfile" override="true" prefix="extfile" src="schema/externalfile.xsd"/>
   </extension>
-  
-  <extension point="doctype" target="org.nuxeo.ecm.core.schema.TypeService">
 
-    <doctype extends="Document" name="ExternalFile">
-      <schema name="common"/>
+  <extension point="doctype" target="org.nuxeo.ecm.core.schema.TypeService">  
+    <facet name="externalfile">
       <schema name="externalfile"/>
+    </facet>
+    
+    <facet name="Picture">
+      <schema name="externalfile"/>
+      <schema name="picture"/>
+      <schema name="image_metadata"/>
+    </facet>
+    
+    <doctype extends="Document" name="File">
+      <schema name="common"/>
       <schema name="dublincore"/>
       <schema name="uid"/>
       <schema name="files"/>
@@ -26,8 +35,26 @@
       <facet name="Publishable"/>
       <facet name="Commentable"/>
       <facet name="HasRelatedText"/>
+      <facet name="externalfile"/>
     </doctype>
     
+    <doctype extends="Document" name="Picture">
+      <schema name="common"/>
+      <schema name="uid"/>
+      <schema name="dublincore"/>
+      <facet name="Picture"/>
+      <facet name="Versionable"/>
+      <facet name="Publishable"/>
+      <facet name="Commentable"/>
+      <facet name="HasRelatedText"/> 
+    </doctype>
+      
+  </extension>
+  
+  
+  <extension point="BlobHolderFactory" target="org.nuxeo.ecm.core.api.blobholder.BlobHolderAdapterComponent">
+    <blobHolderFactory class="org.nuxeo.ecm.platform.importer.externalblob.factories.ExternalBlobHolderFactory" facet="externalfile" name="externalFile"/>
+    <blobHolderFactory class="org.nuxeo.ecm.platform.importer.externalblob.factories.ExternalBlobHolderFactory" facet="Picture" name="externalPicture"/>
   </extension>
   
   <extension point="ExternalBlobAdapter" target="org.nuxeo.ecm.core.api.blobholder.BlobHolderAdapterComponent">
@@ -35,6 +62,22 @@
         class="org.nuxeo.ecm.core.api.externalblob.FileSystemExternalBlobAdapter" prefix="fs">
         <property name="container"></property>
     </adapter>
+  </extension>
+  
+   <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
+
+    <listener name="externalPictureChangedListener" async="false" postCommit="false"
+      class="org.nuxeo.ecm.platform.importer.externalblob.picture.ExternalPictureChangedListener" priority="10">
+      <event>aboutToCreate</event>
+      <event>beforeDocumentModification</event>
+    </listener>
+    
+    <listener name="externalPictureViewsGenerationListener" async="false" postCommit="false"
+      class="org.nuxeo.ecm.platform.importer.externalblob.picture.ExternalPictureViewsGenerationListener" priority="10">
+      <event>documentCreated</event>
+      <event>documentModified</event>
+    </listener>
+
   </extension>
   
 </component>

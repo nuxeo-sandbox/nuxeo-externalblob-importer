@@ -49,9 +49,11 @@ import org.nuxeo.runtime.test.runner.LocalDeploy;
 @RunWith(FeaturesRunner.class)
 @Features(CoreFeature.class)
 @RepositoryConfig(cleanup = Granularity.METHOD)
-@Deploy("org.nuxeo.ecm.platform.content.template")
+@Deploy({"org.nuxeo.ecm.platform.content.template",
+    "org.nuxeo.ecm.platform.picture.core",
+    "org.nuxeo.ecm.platform.picture.api"})
 @LocalDeploy("org.nuxeo.ecm.platform.importer.externalblob.test:test-importer-externalblob-contrib.xml")
-public class ExternalBlobImporterTest {
+public class ExternalPictureImporterTest {
 
 	@Inject
     protected CoreSession session;
@@ -59,9 +61,11 @@ public class ExternalBlobImporterTest {
     @Test
     public void testExternalImport() throws Exception {
 
-    	File source = FileUtils.getResourceFileFromContext("import-src");
+    	File source = FileUtils.getResourceFileFromContext("import-pics");
+    	//System.out.println(source.getAbsolutePath());
 
         SourceNode src = new FileSourceNode(source);
+        //System.out.println(src.getSourcePath());
 
         String targetPath = "/default-domain/workspaces/";
 
@@ -76,17 +80,24 @@ public class ExternalBlobImporterTest {
 
         session.save();
 
+//        DocumentModelList list = session.query("SELECT * FROM DOCUMENT order by ecm:path");
+//        for (DocumentModel documentModel : list) {
+//            System.out.println(documentModel.getPathAsString());
+//        }
+
         //Test hello.pdf
-        DocumentModel doc = session.getDocument(new PathRef(targetPath + "import-src/hello.pdf"));
+        DocumentModel doc = session.getDocument(new PathRef(targetPath + "import-pics/Cosmos.jpg"));
 
         Blob blob = (FileBlob)doc.getProperty("externalfile", "content");
         assertNotNull(blob);
         File file = blob.getFile();
-        assertEquals(file.getName(), "hello.pdf");
+        assertEquals(file.getName(), "Cosmos.jpg");
+        System.out.println("File path -"+file.getAbsolutePath());
 
         BlobHolder bh1 = doc.getAdapter(BlobHolder.class);
         assertNotNull(bh1);
         System.out.println("BlobHolder filepath - "+bh1.getFilePath());
+        System.out.println("BlobHolder instance of - "+bh1.getClass());
 
         Blob extBlob = bh1.getBlob();
         assertNotNull(extBlob);
