@@ -45,7 +45,7 @@ public class ExternalBlobDocumentModelFactory extends DefaultDocumentModelFactor
      * Instantiate a DefaultDocumentModelFactory that creates Folder and File
      */
     public ExternalBlobDocumentModelFactory() {
-        this("Folder", "Picture");
+        this("Folder", "File");
     }
 
     /**

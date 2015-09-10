@@ -12,7 +12,7 @@ import org.nuxeo.ecm.platform.picture.PictureViewsGenerationWork;
 import org.nuxeo.ecm.platform.picture.listener.PictureViewsGenerationListener;
 import org.nuxeo.runtime.api.Framework;
 
-public class ExternalPictureViewsGenerationListener extends PictureViewsGenerationListener {
+public class MultiSourcePictureViewsGenerationListener extends PictureViewsGenerationListener {
 
 
     @Override
@@ -31,8 +31,17 @@ public class ExternalPictureViewsGenerationListener extends PictureViewsGenerati
         DocumentEventContext docCtx = (DocumentEventContext) ctx;
         DocumentModel doc = docCtx.getSourceDocument();
         if (doc.hasFacet(PICTURE_FACET) && !doc.isProxy()) {
-            PictureViewsGenerationWork work = new PictureViewsGenerationWork(doc.getRepositoryName(), doc.getId(),
-                    "externalfile:content");
+
+            //Check if externally stored file content and set schema
+            PictureViewsGenerationWork work = null;
+            if (doc.hasFacet("externalfile")) {
+                work = new PictureViewsGenerationWork(doc.getRepositoryName(), doc.getId(),
+                        "externalfile:content");
+            } else {
+                work = new PictureViewsGenerationWork(doc.getRepositoryName(), doc.getId(),
+                        "file:content");
+            }
+
             WorkManager workManager = Framework.getLocalService(WorkManager.class);
             workManager.schedule(work, WorkManager.Scheduling.IF_NOT_SCHEDULED, true);
         }

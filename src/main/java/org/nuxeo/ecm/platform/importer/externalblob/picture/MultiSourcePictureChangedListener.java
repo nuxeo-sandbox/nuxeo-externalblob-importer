@@ -13,7 +13,7 @@ import org.nuxeo.ecm.platform.picture.api.adapters.AbstractPictureAdapter;
 import org.nuxeo.ecm.platform.picture.listener.PictureChangedListener;
 import org.nuxeo.ecm.platform.picture.listener.PictureViewsGenerationListener;
 
-public class ExternalPictureChangedListener extends PictureChangedListener {
+public class MultiSourcePictureChangedListener extends PictureChangedListener {
 
     @Override
     public void handleEvent(Event event) throws ClientException {
@@ -24,7 +24,15 @@ public class ExternalPictureChangedListener extends PictureChangedListener {
         DocumentEventContext docCtx = (DocumentEventContext) ctx;
         DocumentModel doc = docCtx.getSourceDocument();
         if (doc.hasFacet(PICTURE_FACET) && !doc.isProxy()) {
-            Property fileProp = doc.getProperty("externalfile:content");
+
+            //Check if externally stored file content and set schema
+            Property fileProp = null;
+            if (doc.hasFacet("externalfile")) {
+                fileProp = doc.getProperty("externalfile:content");
+            } else {
+                fileProp = doc.getProperty("file:content");
+            }
+
             Property viewsProp = doc.getProperty(AbstractPictureAdapter.VIEWS_PROPERTY);
 
             if (!viewsProp.isDirty() && (ABOUT_TO_CREATE.equals(event.getName()) || fileProp.isDirty())) {

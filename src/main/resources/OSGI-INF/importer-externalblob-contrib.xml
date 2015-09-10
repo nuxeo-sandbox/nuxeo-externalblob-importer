@@ -2,7 +2,9 @@
 <component name="org.nuxeo.ecm.platform.importer.externalblob.contrib">
 
   <require>org.nuxeo.ecm.core.CoreExtensions</require>
-  <require>org.nuxeo.ecm.platform.picture.web.coreTypes</require>
+  <require>org.nuxeo.ecm.platform.picture.coreTypes</require>
+  <require>org.nuxeo.nuxeo.ecm.platform.video.doctype</require>
+  <require>org.nuxeo.nuxeo.ecm.platform.video.core.listeners</require>
 
   <extension target="org.nuxeo.ecm.platform.importer.service.DefaultImporterComponent" point="importerConfiguration">
    <importerConfig sourceNodeClass ="org.nuxeo.ecm.platform.importer.source.FileSourceNode" >
@@ -20,9 +22,13 @@
     </facet>
     
     <facet name="Picture">
-      <schema name="externalfile"/>
       <schema name="picture"/>
       <schema name="image_metadata"/>
+    </facet>
+    
+    <facet name="Video">
+      <schema name="video"/>
+      <schema name="picture"/>
     </facet>
     
     <doctype extends="Document" name="File">
@@ -46,7 +52,22 @@
       <facet name="Versionable"/>
       <facet name="Publishable"/>
       <facet name="Commentable"/>
-      <facet name="HasRelatedText"/> 
+      <facet name="HasRelatedText"/>
+      <facet name="externalfile"/> 
+    </doctype>
+    
+    <doctype extends="Document" name="Video">
+      <schema name="common"/>
+      <schema name="dublincore"/>
+      <schema name="uid"/>
+      <schema name="files"/>
+      <facet name="Commentable"/>
+      <facet name="Versionable"/>
+      <facet name="Publishable"/>
+      <facet name="Video"/>
+      <facet name="HasStoryboard"/>
+      <facet name="HasVideoPreview"/>
+      <facet name="externalfile"/>
     </doctype>
       
   </extension>
@@ -66,16 +87,34 @@
   
    <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
 
-    <listener name="externalPictureChangedListener" async="false" postCommit="false"
-      class="org.nuxeo.ecm.platform.importer.externalblob.picture.ExternalPictureChangedListener" priority="10">
+	<!-- New listeners to handle external file content for main blob -->
+    <listener name="multiSourcePictureChangedListener" async="false" postCommit="false"
+      class="org.nuxeo.ecm.platform.importer.externalblob.picture.MultiSourcePictureChangedListener" priority="10">
       <event>aboutToCreate</event>
       <event>beforeDocumentModification</event>
     </listener>
     
-    <listener name="externalPictureViewsGenerationListener" async="false" postCommit="false"
-      class="org.nuxeo.ecm.platform.importer.externalblob.picture.ExternalPictureViewsGenerationListener" priority="10">
+    <listener name="multiSourcePictureViewsGenerationListener" async="false" postCommit="false"
+      class="org.nuxeo.ecm.platform.importer.externalblob.picture.MultiSourcePictureViewsGenerationListener" priority="10">
       <event>documentCreated</event>
       <event>documentModified</event>
+    </listener>
+    
+    <listener name="multiSourceVideoChangedListener" async="false" postCommit="false"
+      class="org.nuxeo.ecm.platform.importer.externalblob.video.MultiSourceVideoChangedListener" priority="10">
+      <event>documentCreated</event>
+      <event>beforeDocumentModification</event>
+    </listener>
+    
+    <!-- Disable standard listeners -->
+    <listener name="pictureChangedListener" async="false" postCommit="false" enabled="false"
+      class="org.nuxeo.ecm.platform.picture.listener.PictureChangedListener" priority="20">
+    </listener>
+    <listener name="pictureViewsGenerationListener" async="false" postCommit="false" enabled="false"
+      class="org.nuxeo.ecm.platform.picture.listener.PictureViewsGenerationListener" priority="20">
+    </listener>  
+    <listener name="videoChangedListener" async="false" postCommit="false" enabled="false"
+      class="org.nuxeo.ecm.platform.video.listener.VideoChangedListener" priority="20">
     </listener>
 
   </extension>
