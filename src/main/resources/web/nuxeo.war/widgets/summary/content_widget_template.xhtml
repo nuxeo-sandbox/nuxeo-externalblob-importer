@@ -1,0 +1,98 @@
+<ui:fragment
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jstl/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:nxl="http://nuxeo.org/nxforms/layout">
+
+  <c:set var="canHaveMainBlob" value="#{!empty currentDocumentAsBlobHolder}" />
+  <c:set var="hasMainBlob" value="#{!empty currentDocumentAsBlobHolder.blob}" />
+  <c:set var="hasOtherBlobs" value="#{currentDocument.hasSchema('files') and !empty currentDocument.files.files}" />
+  
+  <!-- External File -->
+  <c:set var="hasExternalFileFacet" value="#{currentDocument.hasFacet('externalfile')}" />
+
+<h:panelGroup styleClass="#{canHaveMainBlob || hasOtherBlobs ? 'content_block': ''}" layout="block">
+
+  <c:if test="#{hasMainBlob || hasOtherBlobs || canHaveMainBlob}">
+
+    <c:if test="#{widget.handlingLabels}">
+      <c:if test="#{!empty widget.label}">
+        <ui:include src="/widgets/incl/widget_label_template.xhtml">
+          <ui:param name="labelStyleClass" value="summaryTitle #{widgetProperty_headerStyleClass}" />
+        </ui:include>
+      </c:if>
+      <c:if test="#{empty widget.label}">
+        <ui:include src="/widgets/incl/label_template.xhtml">
+          <ui:param name="label" value="action.view.content" />
+          <ui:param name="helpLabel" value="#{widget.helpLabel}" />
+          <ui:param name="translated" value="true" />
+          <ui:param name="required" value="#{widget.required}" />
+          <ui:param name="labelStyleClass" value="summaryTitle #{widgetProperty_headerStyleClass}" />
+        </ui:include>
+      </c:if>
+    </c:if>
+
+  </c:if>
+
+  <c:if test="#{!hasMainBlob and canHaveMainBlob and !hasExternalFileFacet}">
+    <div class="dropzone dropArea" context="mainBlob" id="mainBlobDropZone">
+       #{messages['label.dnd.dropHere']}
+    </div>
+  </c:if>
+  <c:if test="#{hasMainBlob and !hasExternalFileFacet}">
+    <div class="dropzone dropContent" context="mainBlob" id="mainBlobDropZone">
+      <table class="smallTable">
+        <tbody>
+          <tr>
+            <td class="labelColumn">
+              <h:outputText value="#{messages['label.summary.download.file']}" />
+            </td>
+            <td class="fieldColumn" docRef="#{currentDocument.id}">
+              <nxl:widgetType name="extendedFile" mode="view" value="#{currentDocument}" field="#{currentDocumentAsBlobHolder.xpath}"/>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </c:if>
+  
+  <c:if test="#{hasMainBlob and hasExternalFileFacet}">
+    <div class="dataInput" id="externalFileContent">
+      <table class="smallTable">
+        <tbody>
+          <tr>
+            <td class="labelColumn">
+              <h:outputText value="#{messages['label.summary.download.file']}" />
+            </td>
+            <td class="fieldColumn" docRef="#{currentDocument.id}">
+              <nxl:widgetType name="extendedFile" mode="view" value="#{currentDocument}" field="#{currentDocumentAsBlobHolder.xpath}"/>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </c:if>
+
+  <c:if test="#{hasOtherBlobs}">
+    <div class="dropzone dropAttachments" context="otherBlobs" id="otherBlobsDropZone">
+      <table class="smallTable">
+        <tbody>
+          <c:forEach items="#{currentDocument.files.files}" varStatus="loop">
+            <tr>
+              <td class="labelColumn">
+                <h:outputText value=" #{messages['label.summary.download.attachments']}" rendered="#{loop.index == 0}" />
+              </td>
+              <td class="fieldColumn">
+                <nxl:widgetType name="extendedFile" mode="view" value="#{currentDocument}"
+                                field="files:files/#{loop.index}/file" />
+              </td>
+            </tr>
+          </c:forEach>
+        </tbody>
+      </table>
+    </div>
+  </c:if>
+
+</h:panelGroup>
+
+</ui:fragment>

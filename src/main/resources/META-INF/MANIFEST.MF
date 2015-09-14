@@ -1,10 +1,7 @@
-Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .
 Manifest-Version: 1.0
 Bundle-Name: externalblob-importer
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Nuxeo
 Bundle-Version: 1.0.qualifier
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.nuxeo.ecm.platform.importer.externalblob;singleton:=true
-Nuxeo-Component: OSGI-INF/importer-externalblob-contrib.xml
+Nuxeo-Component: OSGI-INF/importer-externalblob-contrib.xml 

@@ -38,7 +38,7 @@ import org.nuxeo.ecm.core.test.CoreFeature;
 import org.nuxeo.ecm.core.test.annotations.Granularity;
 import org.nuxeo.ecm.core.test.annotations.RepositoryConfig;
 import org.nuxeo.ecm.platform.importer.executor.DefaultImporterExecutor;
-import org.nuxeo.ecm.platform.importer.externalblob.factories.ExternalBlobDocumentModelFactory;
+import org.nuxeo.ecm.platform.importer.externalblob.factories.*;
 import org.nuxeo.ecm.platform.importer.source.FileSourceNode;
 import org.nuxeo.ecm.platform.importer.source.SourceNode;
 import org.nuxeo.runtime.test.runner.Deploy;
@@ -53,13 +53,13 @@ import org.nuxeo.runtime.test.runner.LocalDeploy;
 @LocalDeploy("org.nuxeo.ecm.platform.importer.externalblob.test:test-importer-externalblob-contrib.xml")
 public class ExternalBlobImporterTest {
 
-	@Inject
+    @Inject
     protected CoreSession session;
 
     @Test
     public void testExternalImport() throws Exception {
 
-    	File source = FileUtils.getResourceFileFromContext("import-src");
+        File source = FileUtils.getResourceFileFromContext("import-src");
 
         SourceNode src = new FileSourceNode(source);
 
@@ -76,8 +76,10 @@ public class ExternalBlobImporterTest {
 
         session.save();
 
-        //Test hello.pdf
+      //Test hello.pdf
         DocumentModel doc = session.getDocument(new PathRef(targetPath + "import-src/hello.pdf"));
+        assertNotNull(doc);
+        assertEquals(doc.getType(), "File");
 
         Blob blob = (FileBlob)doc.getProperty("externalfile", "content");
         assertNotNull(blob);
@@ -86,6 +88,7 @@ public class ExternalBlobImporterTest {
 
         BlobHolder bh1 = doc.getAdapter(BlobHolder.class);
         assertNotNull(bh1);
+        System.out.println("BlobHolder - "+bh1.getClass());
         System.out.println("BlobHolder filepath - "+bh1.getFilePath());
 
         Blob extBlob = bh1.getBlob();

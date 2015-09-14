@@ -1,11 +1,6 @@
 <?xml version="1.0"?>
 <component name="org.nuxeo.ecm.platform.importer.externalblob.contrib">
 
-  <require>org.nuxeo.ecm.core.CoreExtensions</require>
-  <require>org.nuxeo.ecm.platform.picture.coreTypes</require>
-  <require>org.nuxeo.nuxeo.ecm.platform.video.doctype</require>
-  <require>org.nuxeo.nuxeo.ecm.platform.video.core.listeners</require>
-
   <extension target="org.nuxeo.ecm.platform.importer.service.DefaultImporterComponent" point="importerConfiguration">
    <importerConfig sourceNodeClass ="org.nuxeo.ecm.platform.importer.source.FileSourceNode" >
        <documentModelFactory leafType="File" folderishType="Folder" documentModelFactoryClass="org.nuxeo.ecm.platform.importer.externalblob.factories.ExternalBlobDocumentModelFactory" />
@@ -19,59 +14,8 @@
   <extension point="doctype" target="org.nuxeo.ecm.core.schema.TypeService">  
     <facet name="externalfile">
       <schema name="externalfile"/>
-    </facet>
-    
-    <facet name="Picture">
-      <schema name="picture"/>
-      <schema name="image_metadata"/>
-    </facet>
-    
-    <facet name="Video">
-      <schema name="video"/>
-      <schema name="picture"/>
-    </facet>
-    
-    <doctype extends="Document" name="File">
-      <schema name="common"/>
-      <schema name="dublincore"/>
-      <schema name="uid"/>
-      <schema name="files"/>
-      <facet name="Downloadable"/>
-      <facet name="Versionable"/>
-      <facet name="Publishable"/>
-      <facet name="Commentable"/>
-      <facet name="HasRelatedText"/>
-      <facet name="externalfile"/>
-    </doctype>
-    
-    <doctype extends="Document" name="Picture">
-      <schema name="common"/>
-      <schema name="uid"/>
-      <schema name="dublincore"/>
-      <facet name="Picture"/>
-      <facet name="Versionable"/>
-      <facet name="Publishable"/>
-      <facet name="Commentable"/>
-      <facet name="HasRelatedText"/>
-      <facet name="externalfile"/> 
-    </doctype>
-    
-    <doctype extends="Document" name="Video">
-      <schema name="common"/>
-      <schema name="dublincore"/>
-      <schema name="uid"/>
-      <schema name="files"/>
-      <facet name="Commentable"/>
-      <facet name="Versionable"/>
-      <facet name="Publishable"/>
-      <facet name="Video"/>
-      <facet name="HasStoryboard"/>
-      <facet name="HasVideoPreview"/>
-      <facet name="externalfile"/>
-    </doctype>
-      
+    </facet>   
   </extension>
-  
   
   <extension point="BlobHolderFactory" target="org.nuxeo.ecm.core.api.blobholder.BlobHolderAdapterComponent">
     <blobHolderFactory class="org.nuxeo.ecm.platform.importer.externalblob.factories.ExternalBlobHolderFactory" facet="externalfile" name="externalFile"/>

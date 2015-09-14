@@ -16,62 +16,13 @@
     <facet name="externalfile">
       <schema name="externalfile"/>
     </facet>
-    
-    <facet name="Picture">
-      <schema name="picture"/>
-      <schema name="image_metadata"/>
-    </facet>
-    
-    <facet name="Video">
-      <schema name="video"/>
-      <schema name="picture"/>
-    </facet>
-    
-    <doctype extends="Document" name="File">
-      <schema name="common"/>
-      <schema name="dublincore"/>
-      <schema name="uid"/>
-      <schema name="files"/>
-      <facet name="Downloadable"/>
-      <facet name="Versionable"/>
-      <facet name="Publishable"/>
-      <facet name="Commentable"/>
-      <facet name="HasRelatedText"/>
-      <facet name="externalfile"/>
-    </doctype>
-    
-    <doctype extends="Document" name="Picture">
-      <schema name="common"/>
-      <schema name="uid"/>
-      <schema name="dublincore"/>
-      <facet name="Picture"/>
-      <facet name="Versionable"/>
-      <facet name="Publishable"/>
-      <facet name="Commentable"/>
-      <facet name="HasRelatedText"/>
-      <facet name="externalfile"/> 
-    </doctype>
-    
-    <doctype extends="Document" name="Video">
-      <schema name="common"/>
-      <schema name="dublincore"/>
-      <schema name="uid"/>
-      <schema name="files"/>
-      <facet name="Commentable"/>
-      <facet name="Versionable"/>
-      <facet name="Publishable"/>
-      <facet name="Video"/>
-      <facet name="HasStoryboard"/>
-      <facet name="HasVideoPreview"/>
-      <facet name="externalfile"/>
-    </doctype>
       
   </extension>
   
   
   <extension point="BlobHolderFactory" target="org.nuxeo.ecm.core.api.blobholder.BlobHolderAdapterComponent">
     <blobHolderFactory class="org.nuxeo.ecm.platform.importer.externalblob.factories.ExternalBlobHolderFactory" facet="externalfile" name="externalFile"/>
-    <blobHolderFactory class="org.nuxeo.ecm.platform.importer.externalblob.factories.ExternalBlobHolderFactory" facet="Picture" name="externalPicture"/>
+<!--     <blobHolderFactory class="org.nuxeo.ecm.platform.importer.externalblob.factories.ExternalBlobHolderFactory" facet="Picture" name="externalPicture"/> -->
   </extension>
   
   <extension point="ExternalBlobAdapter" target="org.nuxeo.ecm.core.api.blobholder.BlobHolderAdapterComponent">
@@ -81,7 +32,7 @@
     </adapter>
   </extension>
   
-   <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
+  <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
 
 	<!-- New listeners to handle external file content for main blob -->
     <listener name="multiSourcePictureChangedListener" async="false" postCommit="false"

@@ -36,7 +36,6 @@ import org.nuxeo.ecm.platform.importer.source.SourceNode;
 /**
  * External Blob referenced DocumentFactory
  *
- *
  * @author Mike Obrebski
  */
 public class ExternalBlobDocumentModelFactory extends DefaultDocumentModelFactory {
@@ -73,6 +72,7 @@ public class ExternalBlobDocumentModelFactory extends DefaultDocumentModelFactor
         if (leafTypeToUse == null) {
             leafTypeToUse = leafType;
         }
+
         List<String> facets = getFacetsToUse(bh);
 
         String mimeType = bh.getBlob().getMimeType();
@@ -83,12 +83,13 @@ public class ExternalBlobDocumentModelFactory extends DefaultDocumentModelFactor
         String name = getValidNameFromFileName(node.getName());
         String fileName = node.getName();
 
-        //TODO Use mimeType / FileManager to create appropriate Doc Type
-
         DocumentModel doc = session.createDocumentModel(parent.getPathAsString(), name, leafTypeToUse);
         for (String facet : facets) {
             doc.addFacet(facet);
         }
+
+        doc.addFacet("externalfile");
+
 
         Blob extBlob = bh.getBlob();
 
@@ -108,11 +109,9 @@ public class ExternalBlobDocumentModelFactory extends DefaultDocumentModelFactor
 
         doc = session.createDocument(doc);
 
-        if (bh != null) {
-            doc = setDocumentProperties(session, bh.getProperties(), doc);
-        }
-
         return doc;
     }
+
+
 
 }
