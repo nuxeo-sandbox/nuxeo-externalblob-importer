@@ -2,8 +2,6 @@
 
 ## About External Blob Importer
 
-
-
 ## Building
 ### How to Build External Blob Importer
 Build the Nuxeo External Blob Importer with Maven:
