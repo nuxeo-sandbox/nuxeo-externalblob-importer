@@ -18,8 +18,10 @@ public class ExternalBlobHolderFactory implements BlobHolderFactory {
 
         if (facets.contains("externalfile") && !facets.contains("Picture")) {
             blobHolder = new DocumentBlobHolder(doc, "externalfile:content", "externalfile:filename");
-        } else if (facets.contains("Picture")){
+        } else if (facets.contains("externalfile") && facets.contains("Picture")){
             blobHolder = new PictureBlobHolder(doc, "externalfile:content");
+        } else if (!facets.contains("externalfile") && facets.contains("Picture")){
+            blobHolder = new PictureBlobHolder(doc, "file:content");
         } else {
             blobHolder = null;
         }

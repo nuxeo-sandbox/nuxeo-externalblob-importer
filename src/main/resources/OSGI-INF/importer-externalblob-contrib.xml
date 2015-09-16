@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 <component name="org.nuxeo.ecm.platform.importer.externalblob.contrib">
 
+  <require>org.nuxeo.ecm.platform.importer.service.DefaultImporterComponent</require>
+  <require>org.nuxeo.ecm.platform.picture.listeners</require>
+  <require>org.nuxeo.platform.video.core.listeners</require>
+  <require>org.nuxeo.ecm.platform.thumbnail.listener</require>
+  
+
   <extension target="org.nuxeo.ecm.platform.importer.service.DefaultImporterComponent" point="importerConfiguration">
    <importerConfig sourceNodeClass ="org.nuxeo.ecm.platform.importer.source.FileSourceNode" >
        <documentModelFactory leafType="File" folderishType="Folder" documentModelFactoryClass="org.nuxeo.ecm.platform.importer.externalblob.factories.ExternalBlobDocumentModelFactory" />
@@ -50,6 +56,12 @@
       <event>beforeDocumentModification</event>
     </listener>
     
+    <listener name="multiSourceBlobUpdateListener" async="false" postCommit="true" 
+      class="org.nuxeo.ecm.platform.importer.externalblob.thumbnail.MultiSourceBlobUpdateListener" priority="999">
+      <event>documentCreated</event>
+      <event>beforeDocumentModification</event>
+    </listener>
+    
     <!-- Disable standard listeners -->
     <listener name="pictureChangedListener" async="false" postCommit="false" enabled="false"
       class="org.nuxeo.ecm.platform.picture.listener.PictureChangedListener" priority="20">
@@ -59,6 +71,9 @@
     </listener>  
     <listener name="videoChangedListener" async="false" postCommit="false" enabled="false"
       class="org.nuxeo.ecm.platform.video.listener.VideoChangedListener" priority="20">
+    </listener>
+    <listener name="checkBlobUpdate" async="false"  postCommit="true" enabled="false" 
+      class="org.nuxeo.ecm.platform.thumbnail.listener.CheckBlobUpdateListener" priority="999">
     </listener>
 
   </extension>
