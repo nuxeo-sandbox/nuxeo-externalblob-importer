@@ -1,7 +1,9 @@
 Manifest-Version: 1.0
-Bundle-Name: externalblob-importer
-Bundle-Vendor: Nuxeo
+Bundle-SymbolicName: org.nuxeo.ecm.platform.importer.fsblob;singleton:
+ =true
+Bundle-Name: fsblob-importer
 Bundle-Version: 1.0.qualifier
 Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.nuxeo.ecm.platform.importer.externalblob;singleton:=true
-Nuxeo-Component: OSGI-INF/importer-externalblob-contrib.xml 
+Bundle-Vendor: Nuxeo
+Nuxeo-Component: OSGI-INF/importer-externalblob-contrib.xml
+
