@@ -1,34 +1,36 @@
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.nuxeo.ecm.distribution</groupId>
     <artifactId>nuxeo-distribution</artifactId>
-    <version>7.3</version>
+    <version>9.10</version>
   </parent>
 
-  <groupId>org.nuxeo.marketplace</groupId>
-  <artifactId>parent</artifactId>
+  <groupId>nuxeo.labs.externalblob</groupId>
+  <artifactId>nuxeo-labs-externalblob-parent</artifactId>
+  <version>9.10-SNAPSHOT</version>
+  <name>Nuxeo external blob importer parent</name>
+  <description>Nuxeo external blob importer parent project</description>
   <packaging>pom</packaging>
-  <name>Nuxeo External file Importer</name>
-  <version>1.0-SNAPSHOT</version>
-
-  <properties>
-    <marketplace.externalblob-importer.version>1.0-SNAPSHOT</marketplace.externalblob-importer.version>
-  </properties>
 
   <modules>
-    <module>marketplace</module>
+    <module>nuxeo-labs-externalblob-importer-core</module>
+    <module>nuxeo-labs-externalblob-importer-package</module>
   </modules>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.nuxeo.marketplace</groupId>
-        <artifactId>marketplace</artifactId>
-        <version>${marketplace.externalblob-importer.version}</version>
-        <type>zip</type>
+        <groupId>nuxeo.labs.externalblob</groupId>
+        <artifactId>nuxeo-labs-externalblob-importer-core</artifactId>
+        <version>9.10-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>nuxeo.labs.externalblob</groupId>
+        <artifactId>nuxeo-labs-externalblob-importer-package</artifactId>
+        <version>9.10-SNAPSHOT</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -62,13 +64,24 @@
         <enabled>true</enabled>
       </releases>
       <snapshots>
+        <updatePolicy>always</updatePolicy>
         <enabled>true</enabled>
       </snapshots>
     </repository>
   </repositories>
 
-  <description>This package adds and configures the bulk importer to import a directory tree and preserve the referenced binary in it's location.</description>
-  <organization>
-  	<name>Nuxeo</name>
-  </organization>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>public</id>
+      <url>http://maven.nuxeo.org/nexus/content/groups/public</url>
+      <name>Nuxeo releases</name>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
 </project>
